@@ -1,4 +1,17 @@
+import mock
+
 from lex import lexer
+
+
+def lexf_test():
+    """
+    Lex a file.
+    """
+    with mock.patch('lex.lexer.open', mock.mock_open(read_data='(λ)'), create=True) as mock_open:
+        tokens = list(lexer.lexf('foo.tscl'))
+
+    mock_open.assert_called_once_with('foo.tscl', 'r')
+    assert 3 == len(tokens)
 
 
 def lexs_sanity_test():

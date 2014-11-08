@@ -30,10 +30,7 @@ def next_token(string, token_patterns=patterns) -> "lib.Token | None":
     """
     Return the longest length token at the head of the input string, or None.
     """
-    try:
-        return max(next_candidates(string, token_patterns), key=lambda token: token.length)
-    except ValueError:
-        return None  # no matching token
+    return max(next_candidates(string, token_patterns), key=lambda token: token.length)
 
 
 def next_candidates(string, token_patterns=patterns) -> "(lib.Token,)":
