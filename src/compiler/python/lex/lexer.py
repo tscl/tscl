@@ -14,16 +14,15 @@ def lexf(path) -> "(lib.Token,)":
     Lex a source code file at the given path.
     """
     with open(path, 'r') as source:
-        for line in source:
-            yield from lexs(line)
+        yield from lexs(source.read())
 
 
 def lexs(string) -> "(lib.Token,)":
     """
-    Lex the given string.
+    Lex the given source string.
     """
-    column = 0
-    while column < len(string):
-        token = lex.tokens.next_token(string[column:])
+    cursor = 0
+    while cursor < len(string):
+        token = lex.tokens.next_token(string[cursor:])
+        cursor += token.length
         yield token
-        column += token.length

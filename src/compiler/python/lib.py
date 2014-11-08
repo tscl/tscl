@@ -12,8 +12,10 @@ __all__ = [
 # scan output
 Token = namedtuple('Token', 'name value length')
 
+Location = namedtuple('Location', 'pos_start pos_end line_start col_start line_end col_end')
+
 # parse output
-CSTNode = namedtuple('CSTNode', 'token line column children')
+CSTNode = namedtuple('CSTNode', 'name value location')
 
 # optimize output
 ASTNode = namedtuple('ASTNode', 'name value children')

@@ -21,7 +21,8 @@ patterns = (
     ('FLOAT', re.compile(r'^\-?\d+\.\d+')),  # float values -1 < n < 1 must be 0 prefixed, i.e.: -0.4
     # todo: STRING
     ('KEYWORD', re.compile(r'^(λ|fn|let|if|do)')),
-    ('IDENTIFIER', re.compile(r'^[^\(\)\[\]\s\d\-][^\(\)\[\]\s]*')),  # no leading \d-()[], no body ()[]
+    ('ATOM', re.compile(r'^:[^\s]+')),
+    ('IDENTIFIER', re.compile(r'^[^\(\)\[\]\s\d][^\(\)\[\]\s]*')),  # no leading \d()[], no body ()[]
 )
 
 
