@@ -28,10 +28,10 @@ def nodes(tokens) -> "(lib.CSTNode,)":
     for token in tokens:
         pos_start = cursor.pos_end
         pos_end = pos_start + token.length
-        line_start = cursor.line_end + 1 if (previous_token and previous_token.name == 'NEWLINE') else 0
-        col_start = cursor.col_end
-        line_end = line_start  # this is wrong
-        col_end = col_start + token.length  # which means this is, too
+        line_start = cursor.line_end + (1 if (previous_token and previous_token.name == 'NEWLINE') else 0)
+        line_end = cursor.line_end + (1 if (previous_token and previous_token.name == 'NEWLINE') else 0)  # not right
+        col_start = 0 if (previous_token and previous_token.name == 'NEWLINE') else cursor.col_end
+        col_end = col_start + token.length  # which means this is wrong, too
 
         cursor = lib.Location(pos_start, pos_end, line_start, col_start, line_end, col_end)
         node = lib.CSTNode(
@@ -70,9 +70,6 @@ def tree(nodes) -> "[lib.CSTNode]":
 
         # add node to the current branch
         branch.append(node)
-
-    if len(stack) != 1:
-        raise Exception("Parse Error")
 
     return stack[0]
 
