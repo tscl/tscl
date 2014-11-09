@@ -1,10 +1,5 @@
 """
-Parse tscl tokens into a parse tree (concrete syntax tree) representing tscl's formal grammar.
-
-This is a multi-pass phase, consisting of:
-- nodes(tokens): convert tokens into cst nodes with location data
-- tree(nodes): convert nodes to a tree (nested list) data structure
-- cst(tree): convert the un-checked tree into a grammatically correct CST
+Parse tokens into a parse tree (concrete syntax tree) representing tscl's formal grammar.
 """
 import lib
 from parse import tree
