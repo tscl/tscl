@@ -54,4 +54,4 @@ def syntax(nodes):
     """
     Filter nodes that are not part of the language syntax.
     """
-    return filter(lambda node: node.name not in ('WS', 'COMMENT'), nodes)
+    return filter(lambda node: node.name not in ('WS', 'NEWLINE', 'COMMENT'), nodes)

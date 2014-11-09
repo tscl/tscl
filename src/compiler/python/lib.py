@@ -25,4 +25,20 @@ class CST:
 # abstract (CST.Node,) -> AST.Program: abstract syntax tree
 
 class AST:
-    Program = namedtuple('Program', '')
+    # root
+    Program = namedtuple('Program', 'expressions')
+
+    # types
+    Function = namedtuple('Function', 'parameters expressions')
+    List = namedtuple('List', 'expressions')
+
+    Integer = namedtuple('Integer', 'value')
+    Float = namedtuple('Float', 'value')
+    Atom = namedtuple('Atom', 'value')
+
+    # reference
+    Keyword = namedtuple('Keyword', 'value')
+    Identifier = namedtuple('Identifier', 'value')
+
+    # evaluate
+    Call = namedtuple('Call', 'expression expressions')
