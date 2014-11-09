@@ -6,21 +6,28 @@ This is a multi-pass phase, consisting of:
 - tree(nodes): convert nodes to a tree (nested list) data structure
 - cst(tree): convert the un-checked tree into a grammatically correct CST
 """
-import collections
-
 import lib
+from parse import tree
+
+__all__ = [
+    'parse',
+]
 
 
 def parse(tokens) -> "(lib.CSTNode)":
     """
     Transform tokens into an iterable of concrete syntax trees.
     """
-    return cst(tree(nodes(tokens)))
+    return tree.cst(syntax(nodes(tokens)))
 
+
+#
+# Passes over flat `tokens`
+#
 
 def nodes(tokens) -> "(lib.CSTNode,)":
     """
-    Generate flat CST nodes with location information from tokens.
+    Generate flat CST nodes with source location information from tokens.
     """
     cursor = lib.Location(0, 0, 0, 0, 0, 0)
     previous_token = None
@@ -44,44 +51,12 @@ def nodes(tokens) -> "(lib.CSTNode,)":
         yield node
 
 
-def tree(nodes) -> "[lib.CSTNode]":
+#
+# Passes over flat `nodes`
+#
+
+def syntax(nodes):
     """
-    Transform flat CST nodes into nested list tree structures.
+    Filter nodes that are not part of the language syntax.
     """
-    stack = collections.deque()
-    stack.append([])
-
-    start_names = ('LPAREN', 'LBRACKET')
-    end_names = ('RPAREN', 'RBRACKET')
-    name_pairs = tuple(zip(start_names, end_names))
-
-    for node in nodes:
-        branch = stack[0]
-
-        # start branch?
-        if node.name in start_names:
-            branch = [node]
-            stack.appendleft(branch)
-        # end branch? match parenthesis or brackets
-        elif node.name in end_names:
-            if (branch[0].name, node.name) not in name_pairs:
-                raise Exception('Parse Error')
-            # pop the current branch off the stack and append it to the top branch
-            branch = stack.popleft()
-            branch.append(node)
-            stack[0].append(tuple(branch))
-        # add node to the current branch
-        else:
-            branch.append(node)
-
-    if len(stack) != 1:
-        raise Exception("Parse Error")
-
-    return tuple(stack[0])
-
-
-def cst(tree):
-    """
-    Enforce the grammar and drop unnecessary nodes.
-    """
-    return tree
+    return filter(lambda node: node.name not in ('WS', 'COMMENT'), nodes)

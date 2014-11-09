@@ -1,3 +1,5 @@
+import nose.tools
+
 from lex import lexer
 from parse import parser
 
@@ -54,3 +56,24 @@ def parse_test():
                 test_leaf(node)
 
     test_tree(cst)
+
+
+@nose.tools.raises(Exception)
+def parse_unbalanced_paren_test():
+    """
+    Fail to parse tokens due to unbalanced parentheses.
+    """
+    source = """
+    (+ 1 (* 2 3)
+    """
+    parser.parse(lexer.lexs(source))
+
+@nose.tools.raises(Exception)
+def parse_unbalanced_bracket_test():
+    """
+    Fail to parse tokens due to unbalanced square brackets.
+    """
+    source = """
+    (let [1 (* 2 3)))
+    """
+    parser.parse(lexer.lexs(source))
