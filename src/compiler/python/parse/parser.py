@@ -46,24 +46,27 @@ def nodes(tokens) -> "(lib.CSTNode,)":
 
 def tree(nodes) -> "[lib.CSTNode]":
     """
-    Illustration:
-        parse("(+ 6 (- 5 4) 3)\n(* 2 1)") -> [
-            ['(', '+', '6', ['(', '-', '5', '4', ')'], '3', ')'],
-            ['(', '*', '2', '1', ')'],
-        ]
+    Transform flat CST nodes into nested list tree structures.
     """
     stack = collections.deque()
     stack.append([])
+
+    start_names = ('LPAREN', 'LBRACKET')
+    end_names = ('RPAREN', 'RBRACKET')
+    name_pairs = tuple(zip(start_names, end_names))
 
     for node in nodes:
         branch = stack[0]
 
         # manage the branch stack
-        if node.name in ('LPAREN', 'LBRACKET'):
-            # push a new branch on the stack
+        if node.name in start_names:
+            # start branch
             branch = []
             stack.appendleft(branch)
-        elif node.name in ('RPAREN', 'RBRACKET'):
+        elif node.name in end_names:
+            # end branch, match parenthesis or brackets
+            if (branch[0].name, node.name) not in name_pairs:
+                raise Exception('Parse Error')
             # pop the current branch off the stack and append it to the top branch
             branch = stack.popleft()
             stack[0].append(branch)
@@ -71,11 +74,14 @@ def tree(nodes) -> "[lib.CSTNode]":
         # add node to the current branch
         branch.append(node)
 
+    if len(stack) != 1:
+        raise Exception("Parse Error")
+
     return stack[0]
 
 
 def cst(tree):
     """
-    Validate
+    Validate and drop unnecessary nodes.
     """
     return tree
