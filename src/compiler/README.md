@@ -2,7 +2,7 @@
 
 The tscl [compiler](http://en.wikipedia.org/wiki/Compiler#Structure_of_a_compiler) pipeline: 
 
-`(generate (optimize (parse (lex (preprocess source-file)))))`
+`(generate (abstract (parse (lex (preprocess source-file)))))`
 
 The tscl compiler is, conceptually, "a collection of modular and reusable" ([llvm.org](http://llvm.org/)) pieces of 
 software, which may be composed to build an end-to-end pipeline, or may be used independently for any other purpose.
@@ -17,7 +17,7 @@ software, which may be composed to build an end-to-end pipeline, or may be used 
 
 ## Middle End
 
-`(optimize cst) -> ast`
+`(abstract cst) -> ast`
 
 ## Back End
 
