@@ -11,7 +11,7 @@ import collections
 import lib
 
 
-def parse(tokens) -> "[lib.CSTNode,]":
+def parse(tokens) -> "(lib.CSTNode)":
     """
     Transform tokens into an iterable of concrete syntax trees.
     """
@@ -58,30 +58,30 @@ def tree(nodes) -> "[lib.CSTNode]":
     for node in nodes:
         branch = stack[0]
 
-        # manage the branch stack
+        # start branch?
         if node.name in start_names:
-            # start branch
-            branch = []
+            branch = [node]
             stack.appendleft(branch)
+        # end branch? match parenthesis or brackets
         elif node.name in end_names:
-            # end branch, match parenthesis or brackets
             if (branch[0].name, node.name) not in name_pairs:
                 raise Exception('Parse Error')
             # pop the current branch off the stack and append it to the top branch
             branch = stack.popleft()
-            stack[0].append(branch)
-
+            branch.append(node)
+            stack[0].append(tuple(branch))
         # add node to the current branch
-        branch.append(node)
+        else:
+            branch.append(node)
 
     if len(stack) != 1:
         raise Exception("Parse Error")
 
-    return stack[0]
+    return tuple(stack[0])
 
 
 def cst(tree):
     """
-    Validate and drop unnecessary nodes.
+    Enforce the grammar and drop unnecessary nodes.
     """
     return tree

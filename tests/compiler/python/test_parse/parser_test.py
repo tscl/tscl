@@ -47,7 +47,7 @@ def parse_test():
     def test_tree(tree):
         """Test each branch and leaf in the tree."""
         for node in tree:
-            if isinstance(node, list):
+            if isinstance(node, tuple):
                 test_branch(node)
                 test_tree(node)
             else:
