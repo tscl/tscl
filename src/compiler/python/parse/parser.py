@@ -1,7 +1,7 @@
 """
 Parse tokens into a parse tree (concrete syntax tree) representing tscl's formal grammar.
 """
-import lib
+from lib import CST
 from parse import tree
 
 __all__ = [
@@ -24,7 +24,7 @@ def nodes(tokens) -> "(lib.CSTNode,)":
     """
     Generate flat CST nodes with source location information from tokens.
     """
-    cursor = lib.Location(0, 0, 0, 0, 0, 0)
+    cursor = CST.Location(0, 0, 0, 0, 0, 0)
     previous_token = None
 
     for token in tokens:
@@ -35,8 +35,8 @@ def nodes(tokens) -> "(lib.CSTNode,)":
         col_start = 0 if (previous_token and previous_token.name == 'NEWLINE') else cursor.col_end
         col_end = col_start + token.length  # which means this is wrong, too
 
-        cursor = lib.Location(pos_start, pos_end, line_start, col_start, line_end, col_end)
-        node = lib.CSTNode(
+        cursor = CST.Location(pos_start, pos_end, line_start, col_start, line_end, col_end)
+        node = CST.Node(
             name=token.name,
             value=token.value,
             location=cursor,

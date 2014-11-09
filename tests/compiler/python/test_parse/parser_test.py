@@ -1,5 +1,6 @@
 import nose.tools
 
+from lib import CST
 from lex import lexer
 from parse import parser
 
@@ -49,11 +50,11 @@ def parse_test():
     def test_tree(tree):
         """Test each branch and leaf in the tree."""
         for node in tree:
-            if isinstance(node, tuple):
+            if isinstance(node, CST.Node):
+                test_leaf(node)
+            else:
                 test_branch(node)
                 test_tree(node)
-            else:
-                test_leaf(node)
 
     test_tree(cst)
 

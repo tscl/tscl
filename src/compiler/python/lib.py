@@ -5,28 +5,24 @@ from collections import namedtuple
 
 __all__ = [
     'Token',
-    'CSTNode',
-    'ASTNode',
+    'CST',
+    'AST',
 ]
 
 
-# scan output
+# scan (string) -> (Token,)
 
 Token = namedtuple('Token', 'name value length')
 
-# parse output
 
-Location = namedtuple('Location', 'pos_start pos_end line_start col_start line_end col_end')
+# parse (Token,) -> (CST.Node,): concrete syntax tree
+
+class CST:
+    Node = namedtuple('Node', 'name value location')
+    Location = namedtuple('Location', 'pos_start pos_end line_start col_start line_end col_end')
 
 
-class CSTNode:
-    CSTNodeState = namedtuple('CSTNodeState', 'name value location')
+# abstract (CST.Node,) -> AST.Program: abstract syntax tree
 
-    def __init__(self, name, value, location):
-        self._state = CSTNode.CSTNodeState(name, value, location)
-
-    def __getattr__(self, item):
-        return getattr(self._state, item)
-
-# optimize output
-ASTNode = namedtuple('ASTNode', 'name value children')
+class AST:
+    Program = namedtuple('Program', '')
