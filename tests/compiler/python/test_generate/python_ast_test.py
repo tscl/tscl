@@ -12,3 +12,4 @@ def eval_test():
     eval(compiles('1'))
     eval(compiles('1.0'))
     eval(compiles('[1 2 3]'))
+    eval(compiles('(print 1 2 3)'))

@@ -26,8 +26,6 @@ def _(node) -> "python.Expression":
     return python.fix_missing_locations(
         python.Module(
             body=[expr(generate(node)) for node in node.expressions],
-            lineno=1,
-            col_offset=1,
         )
     )
 
@@ -38,8 +36,6 @@ def _(node) -> "python.Expression":
 def _(node):
     return python.Num(
         n=int(node.value),
-        lineno=1,
-        col_offset=1,
     )
 
 
@@ -47,8 +43,6 @@ def _(node):
 def _(node):
     return python.Num(
         n=float(node.value),
-        lineno=1,
-        col_offset=1,
     )
 
 
@@ -57,8 +51,29 @@ def _(node):
     return python.List(
         elts=[generate(node) for node in node.expressions],
         ctx=python.Load(),
-        lineno=1,
-        col_offset=1,
+    )
+
+
+# reference
+
+@generate.register(tscl.Identifier)
+def _(node):
+    return python.Name(
+        id=node.value,
+        ctx=python.Load(),
+    )
+
+
+# call
+
+@generate.register(tscl.Call)
+def _(node):
+    return python.Call(
+        func=generate(node.expression),
+        args=[generate(node) for node in node.expressions],
+        keywords=[],
+        starargs=None,
+        kwargs=None,
     )
 
 
@@ -67,16 +82,4 @@ def _(node):
 def expr(node):
     return python.Expr(
         value=node,
-        lineno=1,
-        col_offset=1,
-    )
-
-
-def p(message):
-    return expr(
-        python.Call(
-            func=python.Name(id='print', ctx=python.Load()), args=[
-                python.Str(s=message)
-            ], keywords=[], starargs=None, kwargs=None
-        )
     )
