@@ -5,7 +5,8 @@ The tscl [compiler](http://en.wikipedia.org/wiki/Compiler#Structure_of_a_compile
 `(generate (abstract (parse (lex (preprocess source-file)))))`
 
 The tscl compiler is, conceptually, "a collection of modular and reusable" ([llvm.org](http://llvm.org/)) pieces of 
-software, which may be composed to build an end-to-end pipeline, or may be used independently for any other purpose.
+software, which may be composed to build an end-to-end compiler pipeline. Or, pieces may be used independently for any 
+other purpose.
 
 ## Front End
 
@@ -15,15 +16,14 @@ software, which may be composed to build an end-to-end pipeline, or may be used 
 
 `(parse tokens) -> cst`
 
-## Middle End
-
 `(abstract cst) -> ast`
 
 ## Back End
 
 `(generate ast) -> target-code`
 
-The tscl compiler is planned to support multiple targets
+The tscl compiler will eventually support multiple targets
+
 * Python AST
 * JavaScript, [example](http://pyjs.org/Translator.html)
 * LLVM IR
