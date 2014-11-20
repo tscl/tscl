@@ -29,7 +29,6 @@ class AST:
     Program = namedtuple('Program', 'expressions')
 
     # types
-    Function = namedtuple('Function', 'parameters expressions')
     List = namedtuple('List', 'expressions')
 
     Integer = namedtuple('Integer', 'value')
@@ -39,6 +38,10 @@ class AST:
     # reference
     Keyword = namedtuple('Keyword', 'value')
     Identifier = namedtuple('Identifier', 'value')
+
+    # scoped
+    Function = namedtuple('Function', 'parameters expressions')
+    Let = namedtuple('Let', 'bindings expressions')
 
     # evaluate
     Call = namedtuple('Call', 'expression expressions')

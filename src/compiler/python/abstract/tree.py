@@ -18,7 +18,8 @@ def tree(node) -> "(lib.ASTNode)":
         # 1:1
         return ast_node(node)
     elif isinstance(node, tuple):
-        if (node[0].name, node[1].name) == ('LPAREN', 'KEYWORD') and node[1].value in ('λ', 'fn'):
+        # branch
+        if (node[0].name, getattr(node[1], 'name', '')) == ('LPAREN', 'KEYWORD') and node[1].value in ('λ', 'fn'):
             return AST.Function(
                 parameters=tree(node[2]),
                 expressions=tuple(filter(None, map(tree, node[3:]))),
