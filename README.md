@@ -11,7 +11,7 @@ A (lisp-ish) language for multiple environments.
 
 Print literal list, integer, float, and true & false boolean values:
 
-`(print [-1 2.3 true false])` prints `[-1 2.3 false true]`
+`(print [-1 2.3 true false])` prints `[-1 2.3 true false]`
 
 Write some equivalent expressions:
 
@@ -27,11 +27,11 @@ Lexical scope and closures:
 
 ```
 (map 
-    ;; a 10x multiplier
-    ((λ [n] 
-        (λ [i] (* n i))) 
-        10)
-    (range 1 11))
+ ;; a 10x multiplier
+ ((λ [n] 
+     (λ [i] (* n i))) 
+   10)
+ (range 1 11))
 ```
 
 → `[10 20 30 40 50 60 70 80 90 100]`
