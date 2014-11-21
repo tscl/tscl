@@ -99,31 +99,38 @@ def _(node, inline):
             ],
             defaults=[],
             vararg=None,
+            # capture current scope and create a new child scope to pass into the function
             kwonlyargs=[
                 python.arg(arg='scope', annotation=None),
             ],
             kw_defaults=[
-                python.Name(id='scope', ctx=python.Load()),
+                python.Call(
+                    func=python.Attribute(
+                        value=python.Name(
+                            id='scope', ctx=python.Load()
+                        ),
+                        attr='new_child', ctx=python.Load(),
+                    ),
+                    args=[], keywords=[], starargs=None, kwargs=None,
+                ),
             ],
             kwarg=None,
         ),
         body=(
             [
-                # create the function scope, initialized with the function locals
-                python.Assign(
-                    targets=[python.Name(id='scope', ctx=python.Store())],
-                    value=python.Call(
-                        func=python.Attribute(
-                            value=python.Name(id='scope', ctx=python.Load()),
-                            attr='new_child', ctx=python.Load()
-                        ),
-                        args=[python.Call(
-                            func=python.Name(id='locals', ctx=python.Load()), args=[],
-                            keywords=[], starargs=None, kwargs=None
-                        )],
-                        keywords=[], starargs=None, kwargs=None,
-                    )
-                )
+                # update scope with function locals
+                expr(python.Call(
+                    func=python.Attribute(
+                        value=python.Name(id='scope', ctx=python.Load()),
+                        attr='update', ctx=python.Load(),
+                    ),
+                    args=[
+                        python.Call(
+                            func=python.Name(id='locals', ctx=python.Load()),
+                            args=[], keywords=[], starargs=None, kwargs=None)
+                    ],
+                    keywords=[], starargs=None, kwargs=None
+                ))
                 # function body with in-lined statements, returning the last expression
             ] + inline_children + children[:-1] + [python.Return(value=children[-1].value)]
             # or pass if no body
