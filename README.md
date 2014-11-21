@@ -1,11 +1,40 @@
 # tscl
 
-A lisp-ish language for multiple environments.
+A (lisp-ish) language for multiple environments.
 
 ## Interesting and Inspiring
 
 * [Hy](https://github.com/hylang/hy)
 * [wisp](https://github.com/Gozala/wisp)
+
+## Introduction to tscl by Example
+
+Print literal list, integer, float, and true & false boolean values:
+
+`(print [-1 2.3 true false])` prints `[-1 2.3 false true]`
+
+Write some equivalent expressions:
+
+`(+ 1 2 3 4)` → `10`
+
+`(apply + [1 2 3 4])` → `10`
+
+`(apply + (map (λ [n] (+ 1 n)) (range 0 4)))` → `10`
+
+`(reduce + [1 2 3 4])` → `10` and with an accumulator `(reduce + 1 [2 3 4])` → `10`
+
+Lexical scope and closures:
+
+```
+(map 
+    ;; a 10x multiplier
+    ((λ [n] 
+        (λ [i] (* n i))) 
+        10)
+    (range 1 11))
+```
+
+→ `[10 20 30 40 50 60 70 80 90 100]`
 
 ----------
 
