@@ -55,9 +55,14 @@ def _(node, inline):
 
 @generate.register(tscl.List)
 def _(node, inline):
-    return python.List(
-        elts=[generate(node, inline) for node in node.expressions],
-        ctx=python.Load(),
+    return python.Call(
+        func=python.Subscript(
+            value=python.Name(id='scope', ctx=python.Load()),
+            slice=python.Index(value=python.Str(s='list')),
+            ctx=python.Load(),
+        ),
+        args=[generate(node, inline) for node in node.expressions],
+        keywords=[], starargs=None, kwargs=None,
     )
 
 
@@ -90,11 +95,15 @@ def _(node, inline):
         name=name,
         args=python.arguments(
             args=[
-                python.arg(arg='scope', annotation=None),
-            ] + [
                 python.arg(arg=param.value, annotation=None) for param in node.parameters.expressions
             ],
-            defaults=[], vararg=None, kwonlyargs=[], kw_defaults=[], kwarg=None,
+            defaults=[],
+            vararg=None,
+            kwonlyargs=[
+                python.arg(arg='scope', annotation=None),
+            ],
+            kw_defaults=[None],
+            kwarg=None,
         ),
         body=(
             [
@@ -146,11 +155,17 @@ def _(node, inline):
     return python.Call(
         func=generate(node.expression, inline),
         args=[
-            python.Name(id='scope', ctx=python.Load()),
-        ] + [
             generate(node, inline) for node in node.expressions
         ],
-        keywords=[],
+        keywords=[
+            python.keyword(
+                arg='scope',
+                value=python.Name(
+                    id='scope',
+                    ctx=python.Load()
+                )
+            ),
+        ],
         starargs=None,
         kwargs=None,
     )

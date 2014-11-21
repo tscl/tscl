@@ -6,6 +6,8 @@ This is just a placeholder.
 import operator
 from functools import reduce
 
+from language.stdlib import objects
+
 __all__ = [
     'exports',
 ]
@@ -13,18 +15,18 @@ __all__ = [
 
 exports = {
     # math
-    '+': lambda *args: reduce(operator.add, args[1:]),
-    '-': lambda *args: reduce(operator.sub, args[1:]),
-    '*': lambda *args: reduce(operator.mul, args[1:]),
-    '/': lambda *args: reduce(operator.truediv, args[1:]),
+    '+': lambda *args, scope=None: reduce(operator.add, args),
+    '-': lambda *args, scope=None: reduce(operator.sub, args),
+    '*': lambda *args, scope=None: reduce(operator.mul, args),
+    '/': lambda *args, scope=None: reduce(operator.truediv, args),
 
     # io
-    'print': lambda *args: print(*args[1:]),
+    'print': lambda *args, scope=None: print(*args),
 
     # data
-    'int': lambda *args: int(*args[1:]),
-    'float': lambda *args: float(*args[1:]),
-    'list': lambda *args: list(*args[1:]),
-    'set': lambda *args: set(*args[1:]),
-    'range': lambda *args: range(*args[1:]),
+    'int': lambda *args, scope=None: int(*args),
+    'float': lambda *args, scope=None: float(*args),
+    'set': lambda *args, scope=None: set(*args),
+    'list': lambda *args, scope=None: objects.List(args),
+    'range': lambda *args, scope=None: objects.List(range(*args)),
 }

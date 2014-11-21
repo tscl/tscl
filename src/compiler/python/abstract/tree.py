@@ -14,28 +14,38 @@ def ast(cst):
 
 
 def tree(node) -> "(lib.ASTNode)":
+    """
+    Return a tscl AST starting at a CST root node.
+    """
     if isinstance(node, CST.Node):
-        # 1:1
-        return ast_node(node)
+        # leaf 1:1
+        return ast_leaf(node)
     elif isinstance(node, tuple):
-        # branch
-        if (node[0].name, getattr(node[1], 'name', '')) == ('LPAREN', 'KEYWORD') and node[1].value in ('λ', 'fn'):
-            return AST.Function(
-                parameters=tree(node[2]),
-                expressions=tuple(filter(None, map(tree, node[3:]))),
-            )
-        if node[0].name == 'LPAREN':
-            return AST.Call(
-                expression=tree(node[1]),
-                expressions=tuple(filter(None, map(tree, node[2:]))),
-            )
-        elif node[0].name == 'LBRACKET':
-            return AST.List(
-                expressions=tuple(filter(None, map(tree, node))),
-            )
+        # branch 1:n
+        return ast_branch(nodes=node)
 
 
-def ast_node(cst_node) -> "AST.* | None":
+def ast_branch(nodes) -> "AST.*":
+    """
+    Return the AST node for the corresponding CST branch.
+    """
+    if (nodes[0].name, getattr(nodes[1], 'name', '')) == ('LPAREN', 'KEYWORD') and nodes[1].value in ('λ', 'fn'):
+        return AST.Function(
+            parameters=tree(nodes[2]),
+            expressions=tuple(filter(None, map(tree, nodes[3:]))),
+        )
+    if nodes[0].name == 'LPAREN':
+        return AST.Call(
+            expression=tree(nodes[1]),
+            expressions=tuple(filter(None, map(tree, nodes[2:]))),
+        )
+    elif nodes[0].name == 'LBRACKET':
+        return AST.List(
+            expressions=tuple(filter(None, map(tree, nodes))),
+        )
+
+
+def ast_leaf(cst_node) -> "AST.* | None":
     """
     Return the AST node for the corresponding CST node, or None.
     """
