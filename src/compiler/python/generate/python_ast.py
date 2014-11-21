@@ -24,10 +24,15 @@ def generate(node, inline) -> "python.*":
 
 @generate.register(tscl.Program)
 def _(node) -> "python.Expression":
-    inline = []
+    inline_children = []
+    children = [expr(generate(node, inline_children)) for node in node.expressions]
     return python.fix_missing_locations(
         python.Module(
-            body=inline+[expr(generate(node, inline)) for node in node.expressions],
+            body=[
+                # import the root scope
+                python.ImportFrom(module='language.scope', names=[python.alias(name='scope', asname=None)], level=0),
+                # the program, with necessary statements in-lined before they are referenced in expressions
+            ] + inline_children + children,
         )
     )
 
@@ -60,8 +65,11 @@ def _(node, inline):
 
 @generate.register(tscl.Identifier)
 def _(node, inline):
-    return python.Name(
-        id=node.value,
+    return python.Subscript(
+        value=python.Name(id='scope', ctx=python.Load()),
+        slice=python.Index(
+            value=python.Str(s=node.value),
+        ),
         ctx=python.Load(),
     )
 
@@ -76,29 +84,45 @@ def _(node, inline):
     Inline the function definition, and return the function identifier.
     """
     name = next(name_generator('lambda'))
+    inline_children = []
+    children = [expr(generate(node, inline_children)) for node in node.expressions]
     inline.append(python.FunctionDef(
         name=name,
         args=python.arguments(
-            args=[python.arg(
-                arg=param.value,
-                annotation=None,
-            ) for param in node.parameters.expressions],
-            defaults=[],
-            vararg=None,
-            kwonlyargs=[],
-            kw_defaults=[],
-            kwarg=None,
+            args=[
+                python.arg(arg='scope', annotation=None),
+            ] + [
+                python.arg(arg=param.value, annotation=None) for param in node.parameters.expressions
+            ],
+            defaults=[], vararg=None, kwonlyargs=[], kw_defaults=[], kwarg=None,
         ),
         body=(
-            [expr(generate(node, inline)) for node in node.expressions[:-1]]
-            + [python.Return(value=generate(node.expressions[-1], inline))]
+            [
+                # create the function scope, initialized with the function locals
+                python.Assign(
+                    targets=[python.Name(id='scope', ctx=python.Store())],
+                    value=python.Call(
+                        func=python.Attribute(
+                            value=python.Name(id='scope', ctx=python.Load()),
+                            attr='new_child', ctx=python.Load()
+                        ),
+                        args=[python.Call(
+                            func=python.Name(id='locals', ctx=python.Load()), args=[],
+                            keywords=[], starargs=None, kwargs=None
+                        )],
+                        keywords=[], starargs=None, kwargs=None,
+                    )
+                )
+                # function body with in-lined statements, returning the last expression
+            ] + inline_children + children[:-1] + [python.Return(value=children[-1].value)]
+            # or pass if no body
         ) if node.expressions else [python.Pass()],
         decorator_list=[],
         returns=None,
     ))
-    return generate(
-        tscl.Identifier(value=name),
-        inline,
+    return python.Name(
+        id=name,
+        ctx=python.Load(),
     )
 
 
@@ -116,9 +140,16 @@ def _(node, inline):
 
 @generate.register(tscl.Call)
 def _(node, inline):
+    """
+    Call a function, passing the current scope.
+    """
     return python.Call(
         func=generate(node.expression, inline),
-        args=[generate(node, inline) for node in node.expressions],
+        args=[
+            python.Name(id='scope', ctx=python.Load()),
+        ] + [
+            generate(node, inline) for node in node.expressions
+        ],
         keywords=[],
         starargs=None,
         kwargs=None,
