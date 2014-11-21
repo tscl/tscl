@@ -13,7 +13,7 @@ def lexf(path) -> "(lib.Token,)":
     """
     Lex a source code file at the given path.
     """
-    with open(path, 'r') as source:
+    with open(path, 'r', encoding='utf-8') as source:
         yield from lexs(source.read())
 
 

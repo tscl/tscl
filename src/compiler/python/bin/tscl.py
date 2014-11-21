@@ -13,7 +13,7 @@ def compilef(path):
     """
     Compile a source file at the given path.
     """
-    with open(path, 'r') as source_file:
+    with open(path, 'r', encoding='utf-8') as source_file:
         source = preprocessor.preprocess(source_file.read())
         return compiles(source, os.path.basename(path))
 
