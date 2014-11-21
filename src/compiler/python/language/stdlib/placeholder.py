@@ -35,6 +35,7 @@ exports = {
     'range': lambda *args, scope=None: objects.List(range(*args)),
 
     # hof
-    'map': lambda *args, scope=None: objects.List(map(*args)),
-    'reduce': lambda *args, scope=None: reduce(*args),  # todo: make sure return value is the right type
+    'apply': lambda f, args, scope=None: f(*args),
+    'map': lambda f, args, scope=None: objects.List(map(f, args)),
+    'reduce': lambda f, *args, scope=None: reduce(f, *reversed(args)),  # todo: make sure return value is the right type
 }
