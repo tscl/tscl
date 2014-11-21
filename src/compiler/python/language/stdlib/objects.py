@@ -3,6 +3,19 @@ The tscl objects and data structures.
 """
 
 
+class Boolean:
+    def __init__(self, value):
+        self.value = bool(value)
+
+    def __bool__(self):
+        return self.value
+
+    # todo: lots more magic methods to define ...
+
+    def __repr__(self):
+        return 'true' if self.value else 'false'
+
+
 class Symbol(str):
     pass
 

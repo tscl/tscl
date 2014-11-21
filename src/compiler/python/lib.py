@@ -31,6 +31,7 @@ class AST:
     # types
     List = namedtuple('List', 'expressions')
 
+    Boolean = namedtuple('Boolean', 'value')
     Integer = namedtuple('Integer', 'value')
     Float = namedtuple('Float', 'value')
     Atom = namedtuple('Atom', 'value')

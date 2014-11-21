@@ -49,6 +49,8 @@ def ast_leaf(cst_node) -> "AST.* | None":
     """
     Return the AST node for the corresponding CST node, or None.
     """
+    if cst_node.name == 'BOOLEAN':
+        return AST.Boolean(cst_node.value)
     if cst_node.name == 'INTEGER':
         return AST.Integer(cst_node.value)
     if cst_node.name == 'FLOAT':

@@ -17,6 +17,7 @@ patterns = (
     ('RPAREN', re.compile(r'^\)')),
     ('LBRACKET', re.compile(r'^\[')),
     ('RBRACKET', re.compile(r'^\]')),
+    ('BOOLEAN', re.compile(r'^(true|false)')),
     ('INTEGER', re.compile(r'^\-?\d+')),
     ('FLOAT', re.compile(r'^\-?\d+\.\d+')),  # float values -1 < n < 1 must be 0 prefixed, i.e.: -0.4
     # todo: STRING

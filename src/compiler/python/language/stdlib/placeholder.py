@@ -20,10 +20,14 @@ exports = {
     '*': lambda *args, scope=None: reduce(operator.mul, args),
     '/': lambda *args, scope=None: reduce(operator.truediv, args),
 
+    # predicates
+    'eq?': lambda *args, scope=None: objects.Boolean(all(map(lambda v: operator.eq(args[0], v), args))),
+
     # io
     'print': lambda *args, scope=None: print(*args),
 
     # data
+    'bool': lambda *args, scope=None: objects.Boolean(*args),
     'int': lambda *args, scope=None: int(*args),
     'float': lambda *args, scope=None: float(*args),
     'set': lambda *args, scope=None: set(*args),
