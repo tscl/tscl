@@ -3,7 +3,8 @@ Bootstrap the tscl runtime environment with a root scope exposing the standard l
 """
 from collections import ChainMap
 
-from .stdlib import placeholder
+from .stdlib import core
+from .stdlib import io
 
 __all__ = [
     'scope',
@@ -11,6 +12,7 @@ __all__ = [
 
 
 scope = ChainMap(
-    placeholder.exports,
+    core.exports,
+    io.exports,
     # ...
 )

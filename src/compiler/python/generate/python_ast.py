@@ -41,17 +41,7 @@ def _(node) -> "python.Expression":
 
 @generate.register(tscl.Boolean)
 def _(node, inline):
-    return python.Call(
-        func=python.Subscript(
-            value=python.Name(id='scope', ctx=python.Load()),
-            slice=python.Index(value=python.Str(s='bool')),
-            ctx=python.Load(),
-        ),
-        args=[
-            python.NameConstant(value=True) if node.value == 'true' else python.NameConstant(value=False)
-        ],
-        keywords=[], starargs=None, kwargs=None,
-    )
+    return python.NameConstant(value=True) if node.value == 'true' else python.NameConstant(value=False)
 
 @generate.register(tscl.Integer)
 def _(node, inline):
@@ -69,14 +59,9 @@ def _(node, inline):
 
 @generate.register(tscl.List)
 def _(node, inline):
-    return python.Call(
-        func=python.Subscript(
-            value=python.Name(id='scope', ctx=python.Load()),
-            slice=python.Index(value=python.Str(s='list')),
-            ctx=python.Load(),
-        ),
-        args=[generate(node, inline) for node in node.expressions],
-        keywords=[], starargs=None, kwargs=None,
+    return python.Tuple(
+        elts=[generate(node, inline) for node in node.expressions],
+        ctx=python.Load(),
     )
 
 
