@@ -10,7 +10,7 @@ def lexf_test():
     with mock.patch('lex.lexer.open', mock.mock_open(read_data='(λ)'), create=True) as mock_open:
         tokens = list(lexer.lexf('foo.tscl'))
 
-    mock_open.assert_called_once_with('foo.tscl', 'r')
+    mock_open.assert_called_once_with('foo.tscl', 'r', encoding='utf-8')
     assert 3 == len(tokens)
 
 
