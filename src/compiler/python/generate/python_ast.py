@@ -96,7 +96,7 @@ def _(node, inline):
 # scoped
 
 @generate.register(tscl.Function)
-def _(node, inline):
+def _(node, inline, bindings=()):
     """
     Anonymous function node.
 
@@ -104,6 +104,18 @@ def _(node, inline):
     """
     name = next(name_generator('lambda'))
     inline_children = []
+    bound = [
+        python.Assign(
+            targets=[python.Subscript(
+                value=python.Name(id='scope', ctx=python.Load()),
+                slice=python.Index(
+                    value=python.Str(s=identifier.value)
+                ),
+                ctx=python.Store(),
+            )],
+            value=generate(expression, inline_children))
+        for identifier, expression in zip(bindings[::2], bindings[1::2])
+    ]
     children = [expr(generate(node, inline_children)) for node in node.expressions]
     inline.append(python.FunctionDef(
         name=name,
@@ -145,8 +157,8 @@ def _(node, inline):
                     ],
                     keywords=[], starargs=None, kwargs=None
                 ))
-                # function body with in-lined statements, returning the last expression
-            ] + inline_children + children[:-1] + [python.Return(value=children[-1].value)]
+                # function body with in-lined statements and bindings (let ...), returning the last expression
+            ] + inline_children + bound + children[:-1] + [python.Return(value=children[-1].value)]
             # or pass if no body
         ) if node.expressions else [python.Pass()],
         decorator_list=[],
@@ -165,7 +177,17 @@ def _(node, inline):
 
     Create an anonymous function, and return a call to the function identifier.
     """
-    pass
+    name = generate(
+        tscl.Function(
+            parameters=tscl.List(expressions=()),
+            expressions=node.expressions,
+        ),
+        inline,
+        node.bindings.expressions,
+    )
+    return python.Call(
+        func=name, args=[], keywords=[], starargs=None, kwargs=None,
+    )
 
 
 # call

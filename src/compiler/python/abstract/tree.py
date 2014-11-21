@@ -29,16 +29,25 @@ def ast_branch(nodes) -> "AST.*":
     """
     Return the AST node for the corresponding CST branch.
     """
+    # Function: (fn [] ...)
     if (nodes[0].name, getattr(nodes[1], 'name', '')) == ('LPAREN', 'KEYWORD') and nodes[1].value in ('λ', 'fn'):
         return AST.Function(
             parameters=tree(nodes[2]),
             expressions=tuple(filter(None, map(tree, nodes[3:]))),
         )
+    # Let: (let [] ...)
+    if (nodes[0].name, getattr(nodes[1], 'name', '')) == ('LPAREN', 'KEYWORD') and nodes[1].value == 'let':
+        return AST.Let(
+            bindings=tree(nodes[2]),
+            expressions=tuple(filter(None, map(tree, nodes[3:]))),
+        )
+    # Call: (...)
     if nodes[0].name == 'LPAREN':
         return AST.Call(
             expression=tree(nodes[1]),
             expressions=tuple(filter(None, map(tree, nodes[2:]))),
         )
+    # List: [...]
     elif nodes[0].name == 'LBRACKET':
         return AST.List(
             expressions=tuple(filter(None, map(tree, nodes))),

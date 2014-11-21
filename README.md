@@ -36,6 +36,17 @@ Lexical scope and closures:
 
 → `[10 20 30 40 50 60 70 80 90 100]`
 
+Let expressions:
+
+```
+(let [a 1
+      b (+ a 1)
+      c (* b 10)]
+  [a b c])
+```
+
+→ `[1 2 20]`
+
 ----------
 
 tscl was started at [Hack Nashville 6](http://hacknashville.com/).
