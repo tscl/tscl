@@ -102,7 +102,9 @@ def _(node, inline):
             kwonlyargs=[
                 python.arg(arg='scope', annotation=None),
             ],
-            kw_defaults=[None],
+            kw_defaults=[
+                python.Name(id='scope', ctx=python.Load()),
+            ],
             kwarg=None,
         ),
         body=(
@@ -157,15 +159,7 @@ def _(node, inline):
         args=[
             generate(node, inline) for node in node.expressions
         ],
-        keywords=[
-            python.keyword(
-                arg='scope',
-                value=python.Name(
-                    id='scope',
-                    ctx=python.Load()
-                )
-            ),
-        ],
+        keywords=[],
         starargs=None,
         kwargs=None,
     )

@@ -29,4 +29,8 @@ exports = {
     'set': lambda *args, scope=None: set(*args),
     'list': lambda *args, scope=None: objects.List(args),
     'range': lambda *args, scope=None: objects.List(range(*args)),
+
+    # hof
+    'map': lambda *args, scope=None: objects.List(map(*args)),
+    'reduce': lambda *args, scope=None: reduce(*args),  # todo: make sure return value is the right type
 }
