@@ -35,6 +35,13 @@ def ast_branch(nodes) -> "AST.*":
             parameters=tree(nodes[2]),
             expressions=tuple(filter(None, map(tree, nodes[3:]))),
         )
+    # If: (if test true false)
+    if (nodes[0].name, getattr(nodes[1], 'name', '')) == ('LPAREN', 'KEYWORD') and nodes[1].value == 'if':
+        return AST.If(
+            expression=tree(nodes[2]),
+            then_expression=tree(nodes[3]),
+            else_expression=tree(nodes[4]),
+        )
     # Let: (let [] ...)
     if (nodes[0].name, getattr(nodes[1], 'name', '')) == ('LPAREN', 'KEYWORD') and nodes[1].value == 'let':
         return AST.Let(

@@ -25,7 +25,7 @@ def generate(node, inline) -> "python.*":
 @generate.register(tscl.Program)
 def _(node) -> "python.Expression":
     inline_children = []
-    children = [expr(generate(node, inline_children)) for node in node.expressions]
+    children = [wrap(generate(node, inline_children)) for node in node.expressions]
     return python.fix_missing_locations(
         python.Module(
             body=[
@@ -101,7 +101,7 @@ def _(node, inline, bindings=()):
             value=generate(expression, inline_children))
         for identifier, expression in zip(bindings[::2], bindings[1::2])
     ]
-    children = [expr(generate(node, inline_children)) for node in node.expressions]
+    children = [wrap(generate(node, inline_children)) for node in node.expressions]
     inline.append(python.FunctionDef(
         name=name,
         args=python.arguments(
@@ -130,7 +130,7 @@ def _(node, inline, bindings=()):
         body=(
             [
                 # update scope with function locals
-                expr(python.Call(
+                wrap(python.Call(
                     func=python.Attribute(
                         value=python.Name(id='scope', ctx=python.Load()),
                         attr='update', ctx=python.Load(),
@@ -193,9 +193,20 @@ def _(node, inline):
     )
 
 
+# flow
+
+@generate.register(tscl.If)
+def _(node, inline):
+    return python.IfExp(
+        test=generate(node.expression, inline),
+        body=generate(node.then_expression, inline),
+        orelse=generate(node.else_expression, inline),
+    )
+
+
 # helpers
 
-def expr(node):
+def wrap(node):
     return python.Expr(
         value=node,
     ) if not isinstance(node, python.FunctionDef) else node

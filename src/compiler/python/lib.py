@@ -46,3 +46,6 @@ class AST:
 
     # evaluate
     Call = namedtuple('Call', 'expression expressions')
+
+    # flow
+    If = namedtuple('If', 'expression then_expression else_expression')

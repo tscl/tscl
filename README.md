@@ -47,6 +47,12 @@ Let expressions:
 
 → `[1 2 20]`
 
+Making decisions:
+
+`(if true 1 0)` → `1`
+
+`(if false 1 0)` → `0`
+
 ## Literate Programming
 
 Source files may be written as plain tscl source, or as Markdown files with tscl source in fenced code blocks. In fact,
