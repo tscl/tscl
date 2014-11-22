@@ -61,7 +61,7 @@ Running this file will print `42`.
 The form above is evaluated when this file is interpreted because it:
 
 * is not indented
-* is fenced with tripple backticks
+* is fenced with triple backticks
 * includes the `tscl` language identifier
 
 The following illustrates the criteria above, but does not itself meet the criteria and will not be evaluated:

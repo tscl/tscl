@@ -5,4 +5,4 @@ from preprocess import markdown
 
 
 def preprocess(source) -> str:
-    return markdown.preprocess(source) if '```' in source else source
+    return markdown.preprocess(source)

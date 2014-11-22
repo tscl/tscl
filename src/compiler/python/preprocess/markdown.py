@@ -5,12 +5,16 @@ import re
 
 
 def preprocess(string) -> str:
-    return ranges_only(string, code_ranges(string))
+    """
+    Return the preprocessed string, or the original string if the preprocessed string is empty.
+    """
+    preprocessed = ranges_only(string, code_ranges(string))
+    return preprocessed if preprocessed.strip() else string
 
 
 def code_ranges(string: str) -> (int, int):
     """
-    Return (begin, end) character index tuple for gated tscl code blocks:
+    Return (begin, end) character index tuple for fenced tscl code blocks:
 
     ```tscl
     ; code here
