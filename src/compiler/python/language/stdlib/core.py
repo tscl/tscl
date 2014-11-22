@@ -15,6 +15,7 @@ exports = {
     '-': lambda *args, scope=None: reduce(operator.sub, args),
     '*': lambda *args, scope=None: reduce(operator.mul, args),
     '/': lambda *args, scope=None: reduce(operator.truediv, args),
+    'inc': lambda arg, scope=None: arg + 1,
 
     # predicates
     'eq?': lambda *args, scope=None: bool(all(map(lambda v: operator.eq(args[0], v), args))),

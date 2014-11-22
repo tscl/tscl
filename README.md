@@ -36,16 +36,15 @@ Lexical scope and closures:
 
 → `[10 20 30 40 50 60 70 80 90 100]`
 
-Let expressions:
+Let Expressions and Destructuring:
 
 ```
-(let [a 1
-      b (+ a 1)
-      c (* b 10)]
+(let [a 0
+      [a b c] (map inc (range a (+ a 3)))]
   [a b c])
 ```
 
-→ `[1 2 20]`
+→ `[1 2 3]`
 
 Making decisions:
 

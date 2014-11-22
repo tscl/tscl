@@ -89,16 +89,54 @@ def _(node, inline, bindings=()):
     """
     name = next(name_generator('lambda'))
     inline_children = []
-    bound = [
+
+    # bindings in local scope
+    binding_assignments = [
         python.Assign(
-            targets=[python.Subscript(
-                value=python.Name(id='scope', ctx=python.Load()),
-                slice=python.Index(
-                    value=python.Str(s=identifier.value)
-                ),
-                ctx=python.Store(),
-            )],
-            value=generate(expression, inline_children))
+            targets=[
+                python.Tuple(
+                    elts=[
+                        python.Subscript(
+                            value=python.Name(id='scope', ctx=python.Load()),
+                            slice=python.Index(
+                                value=python.Str(s=identifier.value),
+                            ),
+                            ctx=python.Store(),
+                        ) for identifier in (identifier.expressions if (isinstance(identifier, tscl.List)) else [identifier])
+                    ],
+                    ctx=python.Store(),
+                )
+            ],
+            value=(
+                # expression: assume iterable if identifier expects destructuring
+                generate(expression, inline_children) if (
+                    isinstance(identifier, (
+                        tscl.List,
+                    )) and isinstance(expression, (
+                        tscl.Let,
+                        tscl.Call,
+                        tscl.Identifier,
+                    ))
+                ) else
+
+                # reference: may or may not evaluate to an iterable
+                generate(expression, inline_children) if isinstance(expression, (
+                    tscl.Identifier,
+                )) else
+
+                # list: wrap nested expressions in tuple if identifier expects destructuring
+                python.Tuple(
+                    elts=[generate(expression, inline_children) for expression in expression.expressions],
+                    ctx=python.Load(),
+                ) if (isinstance(identifier, tscl.List) and isinstance(expression, tscl.List)) else
+
+                # value or expression: wrap in tuple
+                python.Tuple(
+                    elts=[generate(expression, inline_children)],
+                    ctx=python.Load(),
+                )
+            )
+        )
         for identifier, expression in zip(bindings[::2], bindings[1::2])
     ]
     children = [wrap(generate(node, inline_children)) for node in node.expressions]
@@ -143,12 +181,13 @@ def _(node, inline, bindings=()):
                     keywords=[], starargs=None, kwargs=None
                 ))
                 # function body with in-lined statements and bindings (let ...), returning the last expression
-            ] + inline_children + bound + children[:-1] + [python.Return(value=children[-1].value)]
+            ] + inline_children + binding_assignments + children[:-1] + [python.Return(value=children[-1].value)]
             # or pass if no body
         ) if node.expressions else [python.Pass()],
         decorator_list=[],
         returns=None,
     ))
+    # the function itself will be inlined in a parent scope; return an identifier for the function
     return python.Name(
         id=name,
         ctx=python.Load(),
