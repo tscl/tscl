@@ -47,7 +47,7 @@ Let expressions:
 
 → `[1 2 20]`
 
-## Literate Programming:
+## Literate Programming
 
 Source files may be written as plain tscl source, or as Markdown files with tscl source in fenced code blocks. In fact,
 the README.md you're reading is a valid tscl source file.
@@ -64,11 +64,16 @@ The form above is evaluated when this file is interpreted because it:
 * is fenced with tripple backticks
 * includes the `tscl` language identifier
 
-The form below does not meet these criteria and will not be evaluated:
+The following illustrates the criteria above, but does not itself meet the criteria and will not be evaluated:
 
     ```tscl
     (print 42)
     ```
+## No Names
+
+You may have noticed that there are no named functions in the examples. This is because there are no named functions in
+tscl; there are only anonymous closures.
+
 
 ----------
 
