@@ -47,6 +47,29 @@ Let expressions:
 
 → `[1 2 20]`
 
+## Literate Programming:
+
+Source files may be written as plain tscl source, or as Markdown files with tscl source in fenced code blocks. In fact,
+the README.md you're reading is a valid tscl source file.
+
+```tscl
+(print 42)
+```
+
+Running this file will print `42`.
+
+The form above is evaluated when this file is interpreted because it:
+
+* is not indented
+* is fenced with tripple backticks
+* includes the `tscl` language identifier
+
+The form below does not meet these criteria and will not be evaluated:
+
+    ```tscl
+    (print 42)
+    ```
+
 ----------
 
 tscl was started at [Hack Nashville 6](http://hacknashville.com/).

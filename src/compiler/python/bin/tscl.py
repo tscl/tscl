@@ -14,14 +14,17 @@ def compilef(path):
     Compile a source file at the given path.
     """
     with open(path, 'r', encoding='utf-8') as source_file:
-        source = preprocessor.preprocess(source_file.read())
-        return compiles(source, os.path.basename(path))
+        return compiles(
+            source=source_file.read(),
+            name=os.path.basename(path),
+        )
 
 
 def compiles(source, name):
     """
     Compile a source string.
     """
+    source = preprocessor.preprocess(source)
     tokens = lexer.lexs(source)
     cst = parser.parse(tokens)
     ast = tree.ast(cst)
