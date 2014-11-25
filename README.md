@@ -6,6 +6,7 @@ A (lisp-ish) language for multiple environments.
 
 * [Hy](https://github.com/hylang/hy)
 * [wisp](https://github.com/Gozala/wisp)
+* [sibilant](https://github.com/jbr/sibilant)
 
 ## Introduction to tscl by Example
 
