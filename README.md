@@ -4,7 +4,7 @@ A (lisp-ish) language for multiple environments.
 
 ## Interesting and Inspiring
 
-* [Hy](https://github.com/hylang/hy)
+* [Hy](https://github.com/hylang/hy) - [hn thread](https://news.ycombinator.com/item?id=8696975)
 * [wisp](https://github.com/Gozala/wisp)
 * [sibilant](https://github.com/jbr/sibilant)
 
