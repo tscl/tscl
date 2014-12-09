@@ -5,6 +5,7 @@ A (lisp-ish) language for multiple environments.
 ## Interesting and Inspiring
 
 * [Hy](https://github.com/hylang/hy) - [hn thread](https://news.ycombinator.com/item?id=8696975)
+* [Pixie](https://github.com/pixie-lang/pixie) - [interview](https://medium.com/indie-programming-languages/indie-languages-interview-pixie-and-timothy-baldridge-cadbc36418dc)
 * [wisp](https://github.com/Gozala/wisp)
 * [sibilant](https://github.com/jbr/sibilant)
 
